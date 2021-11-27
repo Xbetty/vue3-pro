@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { ref, computed, reactive, toRefs } from 'vue'
+import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered } from 'vue'
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 interface DataProps {
   count: number;
@@ -37,6 +37,16 @@ export default defineComponent({
     // const increse = ()=>{
     //   count.value++
     // }
+    onMounted(()=>{
+      console.log('onMounted')
+    })
+    onUpdated(()=>{
+      console.log('onUpdated')
+    })
+    // 调试作用，观察数据的变化
+    onRenderTriggered((event)=>{
+      console.log('event', event)
+    })
     // 生成响应式对象
     const data: DataProps = reactive({
       count: 0,
