@@ -73,7 +73,7 @@ export default defineComponent({
     //   document.title = 'updated' + greetings.value
     // })
     // 不监听data的所有对象，只监听单个属性，不可以用data.count，会失去响应式，要用回调函数取
-    watch([greetings, data.count], (newVal, oldVal)=>{
+    watch([greetings, ()=> data.count], (newVal, oldVal)=>{
       // data的值是proxy
       console.log('newVal', newVal, 'oldVal', oldVal)
       console.log('greetings',greetings)
