@@ -3,6 +3,12 @@
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
     <h1>{{count}}</h1>
     <h2>{{double}}</h2>
+    <ul>
+      <li v-for="number in numbers" :key="number">
+        {{number}}
+      </li>
+    </ul>
+    <h1>{{person.name}}</h1>
     <button @click="increse">+1</button>
   </div>
 </template>
@@ -15,6 +21,8 @@ interface DataProps {
   count: number;
   double: number;
   increse: ()=> void;
+  numbers: number[];
+  person: { name?: string }
 }
 
 export default defineComponent({
@@ -33,8 +41,13 @@ export default defineComponent({
     const data: DataProps = reactive({
       count: 0,
       double: computed(() => data.count * 2),
-      increse: ()=> data.count++
+      increse: ()=> data.count++,
+      numbers: [0, 1, 2],
+      person: {}
     })
+    // vue3能响应式更改数组和对象，使$set成为过去时
+    data.numbers[0] = 3
+    data.person.name="xxx"
     // toRefs 响应式对象作为参数，返回普通对象，但是这个对象的每一项都变成了ref类型的对象
     const refData = toRefs(data)
     // return {
