@@ -12,12 +12,15 @@
     <button @click="increse">+1</button>
     <h1 @click="updateGreeting">{{greetings}}</h1>
     <h1>x: {{x}}, y: {{y}}</h1>
+    <h2 v-if="loading">loading...</h2>
+    <img v-if="loaded" :src="result.message">
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
+import useURLLoader from '../hooks/useURLLoaders'
 // import useMousePosition from '../hooks/useMousePosition'
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 interface DataProps {
@@ -58,8 +61,12 @@ export default defineComponent({
       numbers: [0, 1, 2],
       person: {}
     })
+
     // console.log('useMousePosition',useMousePosition)
     // const { x, y } = useMousePosition
+    
+    const {result,loading,loaded,error} =useURLLoader('https://dog.ceo/api/breeds/image/random')
+
     const greetings = ref('title')
     const updateGreeting = () => {
       greetings.value = 'hello'
@@ -115,7 +122,11 @@ export default defineComponent({
       greetings,
       updateGreeting,
       x,
-      y
+      y,
+      result,
+      loading,
+      loaded,
+      error
       // 响应式类型在模版中才是响应式的，这里的响应式是ref类型，把值从响应式中取出来就失去了响应式的魔力，变成普通的js类型
       // ...data
     }
