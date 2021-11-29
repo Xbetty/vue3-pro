@@ -11,12 +11,14 @@
     <h1>{{person.name}}</h1>
     <button @click="increse">+1</button>
     <h1 @click="updateGreeting">{{greetings}}</h1>
+    <h1>x: {{x}}, y: {{y}}</h1>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch } from 'vue'
+import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
+// import useMousePosition from '../hooks/useMousePosition'
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 interface DataProps {
   count: number;
@@ -38,12 +40,12 @@ export default defineComponent({
     // const increse = ()=>{
     //   count.value++
     // }
-    onMounted(()=>{
-      console.log('onMounted')
-    })
-    onUpdated(()=>{
-      console.log('onUpdated')
-    })
+    // onMounted(()=>{
+    //   console.log('onMounted')
+    // })
+    // onUpdated(()=>{
+    //   console.log('onUpdated')
+    // })
     // 调试作用，观察数据的变化
     onRenderTriggered((event)=>{
       console.log('event', event)
@@ -56,6 +58,8 @@ export default defineComponent({
       numbers: [0, 1, 2],
       person: {}
     })
+    // console.log('useMousePosition',useMousePosition)
+    // const { x, y } = useMousePosition
     const greetings = ref('title')
     const updateGreeting = () => {
       greetings.value = 'hello'
@@ -73,7 +77,7 @@ export default defineComponent({
     //   document.title = 'updated' + greetings.value
     // })
     // 不监听data的所有对象，只监听单个属性，不可以用data.count，会失去响应式，要用回调函数取
-    watch([greetings, data.count], (newVal, oldVal)=>{
+    watch([greetings, ()=> data.count], (newVal, oldVal)=>{
       // data的值是proxy
       console.log('newVal', newVal, 'oldVal', oldVal)
       console.log('greetings',greetings)
@@ -83,6 +87,22 @@ export default defineComponent({
     // vue3能响应式更改数组和对象，使$set成为过去时
     data.numbers[0] = 3
     data.person.name="xxx"
+    
+    // 追踪鼠标 (抽离出来)
+    const x = ref(0)
+    const y = ref(0)
+    const updateMounse = (e: MouseEvent) => {
+      x.value = e.pageX
+      y.value = e.pageY
+    }
+    onMounted(() => {
+      document.addEventListener('click', updateMounse)
+    })
+    onUnmounted(()=>{
+      document.removeEventListener('click', updateMounse)
+    })
+
+
     // toRefs 响应式对象作为参数，返回普通对象，但是这个对象的每一项都变成了ref类型的对象
     const refData = toRefs(data)
     // return {
@@ -93,7 +113,9 @@ export default defineComponent({
     return {
       ...refData,
       greetings,
-      updateGreeting
+      updateGreeting,
+      x,
+      y
       // 响应式类型在模版中才是响应式的，这里的响应式是ref类型，把值从响应式中取出来就失去了响应式的魔力，变成普通的js类型
       // ...data
     }
