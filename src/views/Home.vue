@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <!-- 弹窗 -->
+    <button @click="openModal">打开弹窗</button>
+    <Modal :isOpen="modalIsOpen" @close-modal="closeModal"></Modal>
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
     <h1>{{count}}</h1>
     <h2>{{double}}</h2>
@@ -21,6 +24,7 @@
 import { defineComponent } from 'vue';
 import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
 import useURLLoader from '../hooks/useURLLoaders'
+import Modal from './Modal.vue'
 // import useMousePosition from '../hooks/useMousePosition'
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 interface DataProps {
@@ -38,6 +42,7 @@ interface DogResult {
 export default defineComponent({
   name: 'Home',
   components: {
+    Modal
   },
   setup(){
     // const count = ref(0)
@@ -122,6 +127,16 @@ export default defineComponent({
 
     // toRefs 响应式对象作为参数，返回普通对象，但是这个对象的每一项都变成了ref类型的对象
     const refData = toRefs(data)
+
+    // 测试modal
+    const modalIsOpen = ref(false)
+    const openModal = ()=>{
+      modalIsOpen.value = true
+    }
+    const closeModal = ()=>{
+      modalIsOpen.value = false
+    }
+
     // return {
     //   count,
     //   double,
@@ -136,7 +151,10 @@ export default defineComponent({
       result,
       loading,
       loaded,
-      error
+      error,
+      modalIsOpen,
+      openModal,
+      closeModal
       // 响应式类型在模版中才是响应式的，这里的响应式是ref类型，把值从响应式中取出来就失去了响应式的魔力，变成普通的js类型
       // ...data
     }

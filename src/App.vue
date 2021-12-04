@@ -15,6 +15,12 @@
   color: #2c3e50;
 }
 
+#modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 #nav {
   padding: 30px;
 }
