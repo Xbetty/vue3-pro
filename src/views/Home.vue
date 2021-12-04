@@ -1,5 +1,9 @@
 <template>
   <div class="home">
+    <Suspense>
+      <template #default><AsyncShow/></template>
+      <template #fallback><h1>loading...</h1></template>
+    </Suspense>
     <!-- 弹窗 -->
     <button @click="openModal">打开弹窗</button>
     <Modal :isOpen="modalIsOpen" @close-modal="closeModal"></Modal>
@@ -25,6 +29,7 @@ import { defineComponent } from 'vue';
 import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
 import useURLLoader from '../hooks/useURLLoaders'
 import Modal from './Modal.vue'
+import AsyncShow from './AsyncShow.vue'
 // import useMousePosition from '../hooks/useMousePosition'
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 interface DataProps {
@@ -42,7 +47,8 @@ interface DogResult {
 export default defineComponent({
   name: 'Home',
   components: {
-    Modal
+    Modal,
+    AsyncShow
   },
   setup(){
     // const count = ref(0)
