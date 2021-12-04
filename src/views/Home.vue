@@ -1,12 +1,22 @@
 <template>
   <div class="home">
+    <h1>=============Suspense=============</h1>
     <Suspense>
-      <template #default><AsyncShow/></template>
+      <template #default>
+        <div>
+          <async-show/>
+          <async-dog-show/>
+        </div>
+      </template>
       <template #fallback><h1>loading...</h1></template>
     </Suspense>
+    <p>{{suspenseError}}</p>
+    <h1>=============teleport=============</h1>
     <!-- 弹窗 -->
     <button @click="openModal">打开弹窗</button>
     <Modal :isOpen="modalIsOpen" @close-modal="closeModal"></Modal>
+
+    <h1>=====composition API======</h1>
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
     <h1>{{count}}</h1>
     <h2>{{double}}</h2>
@@ -26,10 +36,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
+import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted, onErrorCaptured } from 'vue'
 import useURLLoader from '../hooks/useURLLoaders'
 import Modal from './Modal.vue'
 import AsyncShow from './AsyncShow.vue'
+import AsyncDogShow from './AsyncDogShow.vue'
 // import useMousePosition from '../hooks/useMousePosition'
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 interface DataProps {
@@ -48,9 +59,15 @@ export default defineComponent({
   name: 'Home',
   components: {
     Modal,
-    AsyncShow
+    AsyncShow,
+    AsyncDogShow
   },
   setup(){
+    const suspenseError = ref(null)
+    onErrorCaptured( (e: any) =>{
+      suspenseError.value = e
+      return true
+    })
     // const count = ref(0)
     // const double = computed(()=>{
     //   return count.value * 2
@@ -160,7 +177,8 @@ export default defineComponent({
       error,
       modalIsOpen,
       openModal,
-      closeModal
+      closeModal,
+      suspenseError
       // 响应式类型在模版中才是响应式的，这里的响应式是ref类型，把值从响应式中取出来就失去了响应式的魔力，变成普通的js类型
       // ...data
     }
