@@ -30,6 +30,10 @@ interface DataProps {
   numbers: number[];
   person: { name?: string }
 }
+interface DogResult {
+  message: string;
+  status: string
+}
 
 export default defineComponent({
   name: 'Home',
@@ -65,7 +69,13 @@ export default defineComponent({
     // console.log('useMousePosition',useMousePosition)
     // const { x, y } = useMousePosition
     
-    const {result,loading,loaded,error} =useURLLoader('https://dog.ceo/api/breeds/image/random')
+    const {result,loading,loaded,error} =useURLLoader<DogResult>('https://dog.ceo/api/breeds/image/random')
+    watch(result, ()=>{
+      if(result.value){
+        // message上面没有null类型，所以需要给result.value引入完美的类型，即运行时才获得某种类型。因为是函数所以可以使用泛型
+        console.log('value',result.value?.message)
+      }
+    })
 
     const greetings = ref('title')
     const updateGreeting = () => {
